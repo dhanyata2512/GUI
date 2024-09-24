@@ -9,8 +9,9 @@ def show_calender():
 
     year_c=int(year_box.get())
     info_c=calendar.calendar(year_c)
-    display_c=Label(c_screen,text=info_c,font="stencil 10")
-    display_c.grid(row=4,column=1,padx=30,pady=30)
+    display_c=Text(c_screen,height=600,width=800)
+    display_c.insert(END,info_c)
+    display_c.pack()
 
     c_screen.mainloop()
 
