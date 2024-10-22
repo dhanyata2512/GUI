@@ -12,19 +12,19 @@ def choice(player_input):
 
     if(player_input == computer_input):
         winning.config(text = "Tie")
-    elif (player_input=="rock" and computer_input =="scissors") or (player_input== "scissors" or computer_input == "paper") or (player_input== "paper" or computer_input == "rock"):
+    elif (player_input=="rock" and computer_input =="scissors") or (player_input== "scissors" and computer_input == "paper") or (player_input== "paper" and computer_input == "rock"):
         winning.config(text="You Win! :)")
         player_score= player_score + 1
 
     else:
         winning.config(text="You Lose! :(")
-        computer_score=computer_score - 1
+        computer_score=computer_score + 1
 
 
     you_selected.config(text = 'Your Selected : ' + player_input)
     computer_selected.config(text = 'Computer Selected : ' + computer_input)
     you_score.config(text="Your Score:" + str(player_score))
-    computer_score.config(text="Computer Score:" + str(computer_score))
+    computer.config(text="Computer Score:" + str(computer_score))
 
 
 
@@ -70,7 +70,7 @@ computer_selected.grid(row=2,column=1)
 you_score=Label(bottom_frame,text="Your Score:",background="#bfb9ff")
 you_score.grid(row=1,column=2, pady=20)
 
-computer_score=Label(bottom_frame,text="Computer Score:",background="#bfb9ff")
-computer_score.grid(row=2,column=2, padx=20)
+computer=Label(bottom_frame,text="Computer Score:",background="#bfb9ff")
+computer.grid(row=2,column=2, padx=20)
 
 root.mainloop()
