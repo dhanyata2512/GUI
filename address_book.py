@@ -29,6 +29,30 @@ def adding():
     n=n_entry.get()
     if n == "":
         messagebox.showerror("Error","Name is mandatory!")
+    else:
+        if n not in address_book:
+            address_book[n]=(a_entry.get(),m_entry.get(),e_entry.get(),b_entry.get())
+            l_box.insert(END,n)
+            clear_all()
+        else:
+            messagebox.showerror("Error","This name already exists!")    
+
+def clear_all():
+    n_entry.delete(0,END)
+    a_entry.delete(0,END)
+    m_entry.delete(0,END)
+    e_entry.delete(0,END)
+    b_entry.delete(0,END)
+
+def display(event):
+    top_root=Toplevel(root)
+    index_value=l_box.curselection()
+    if index_value:
+        name=l_box.get(index_value)
+        details=address_book[name]
+        res1="Name:  "+name+ "\n" +"Address:  "+details[0]+"\n"+"Mobile:  "+details[1]+"\n"+"Email:  "+details[2]+"\n"+"Birthday:  "+"\n"+details[3]   
+        final_result=Label(top_root,text=res1)
+        final_result.pack()
 
 def remove():
     recive=l_box.curselection()
@@ -55,8 +79,9 @@ left_frame.pack(side=LEFT,pady=20)
 s_bar=Scrollbar(left_frame)
 s_bar.grid(row=0,column=1)
 
-l_box=Listbox(left_frame,yscrollcommand=s_bar.set,selectmode=("multiple"))
+l_box=Listbox(left_frame,yscrollcommand=s_bar.set)
 l_box.grid(row=0,column=0)
+l_box.bind("<<ListboxSelect>>",display)
 
 right_frame=Frame(middle_frame,background="#C2E5F0")
 right_frame.pack(side=LEFT,pady=20)
