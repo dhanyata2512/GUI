@@ -1,6 +1,7 @@
 from tkinter import*
 from tkinter.filedialog import askopenfile,asksaveasfile
 from tkinter import messagebox
+import os
 
 root=Tk()
 root.geometry("450x470")
@@ -9,20 +10,29 @@ root.config(background="#C2E5F0")
 address_book={}
 
 def open_file():
+    reset()
+    global address_book
     f=askopenfile(mode="r")
     if f is not None:
-        p=f.readlines()
-        print(p)
-        l_box.delete(0,END)
-        for i in p:
+        address_book=eval(f.read())
+        for i in address_book:
             l_box.insert(END,i)
+        file_name=os.path.basename(f.name)
+        title.config(text=file_name)
+
+
 
 def s_file():
     file=asksaveasfile(defaultextension="*.txt")
     if file is not None:
-        for item in l_box.get(0,END):
-            print(item,file=file)
-        l_box.delete(0,END)    
+            print(address_book,file=file)
+            reset()
+
+def reset():
+    clear_all()
+    l_box.delete(0,END) 
+    address_book.clear() 
+    title.config(text="My Address Book")        
 
 
 def adding():
@@ -31,11 +41,10 @@ def adding():
         messagebox.showerror("Error","Name is mandatory!")
     else:
         if n not in address_book:
-            address_book[n]=(a_entry.get(),m_entry.get(),e_entry.get(),b_entry.get())
             l_box.insert(END,n)
-            clear_all()
-        else:
-            messagebox.showerror("Error","This name already exists!")    
+
+        address_book[n]=(a_entry.get(),m_entry.get(),e_entry.get(),b_entry.get())
+        clear_all()
 
 def clear_all():
     n_entry.delete(0,END)
@@ -60,6 +69,17 @@ def remove():
     for i in recive:  
         l_box.delete(i)
 
+def edit():
+    clear_all()
+    index=l_box.curselection()
+    if index:
+        n=l_box.get(index)
+        n_entry.insert(END,n)
+        details=address_book[n]
+        a_entry.insert(END,details[0])
+        m_entry.insert(END,details[1])
+        e_entry.insert(END,details[2])
+        b_entry.insert(END,details[3])
 
 top_frame=Frame(root,background="#C2E5F0")
 top_frame.pack()       
@@ -122,10 +142,10 @@ bottom_frame.pack()
 delete=Button(bottom_frame,text="DELETE",width=8,command=remove)
 delete.grid(row=1,column=1,padx=10)
 
-edit=Button(bottom_frame,text="Edit",width=8)
+edit=Button(bottom_frame,text="Edit",width=8,command=edit)
 edit.grid(row=1,column=0)
 
-add=Button(bottom_frame,text="ADD",width=8,command=adding)
+add=Button(bottom_frame,text="ADD/UPDATE",width=12,command=adding)
 add.grid(row=1,column=2)
 
 save=Button(bottom_frame,text= "SAVE",command=s_file,width=32)
