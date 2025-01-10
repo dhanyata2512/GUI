@@ -1,6 +1,7 @@
 from tkinter import*
 from tkinter.filedialog import askopenfile,asksaveasfile
 from tkinter import messagebox
+import os
 
 root=Tk()
 root.geometry("600x400")
@@ -8,17 +9,41 @@ root.config(background="#FF82AB")
 
 student_marks={}
 
+def open_file():
+    reset()
+    global student_marks
+    f=askopenfile(mode="r")
+    if f is not None:
+        student_marks=eval(f.read())
+        for i in student_marks:
+            l_box.insert(END,i)
+        file_name=os.path.basename(f.name)
+        title.config(text=file_name)
+
+
+
+def s_file():
+    file=asksaveasfile(defaultextension="*.txt")
+    if file is not None:
+            print(student_marks,file=file)
+            reset()
+
+def reset():
+    clear_all()
+    l_box.delete(0,END) 
+    student_marks.clear() 
+    title.config(text="Student Marks Logger")    
+
 def adding():
     n=n_entry.get()
     if n == "":
         messagebox.showerror("Error","Name is mandatory!")
     else:
         if n not in student_marks:
-            student_marks[n]=(rn_entry.get(),mm_entry.get(),sm_entry.get(),p_entry.get())
             l_box.insert(END,n)
-            clear_all()
-        else:
-            messagebox.showerror("Error","This name already exists!")
+
+        student_marks[n]=(rn_entry.get(),mm_entry.get(),sm_entry.get(),p_entry.get())    
+        clear_all()         
 
 def clear_all():
     n_entry.delete(0,END)
@@ -36,6 +61,24 @@ def display(event):
         res1="Name:  "+name+ "\n" +"Roll Number:  "+details[0]+"\n"+"Maths Marks:  "+details[1]+"\n"+"Science Marks:  "+details[2]+"\n"+"Percentage:  "+"\n"+details[3]   
         final_result=Label(top_root,text=res1)
         final_result.pack()
+
+def remove():
+    recive=l_box.curselection()
+    recive=recive[::-1]
+    for i in recive:  
+        l_box.delete(i)
+
+def edit():
+    clear_all()
+    index=l_box.curselection()
+    if index:
+        n=l_box.get(index)
+        n_entry.insert(END,n)
+        details=student_marks[n]
+        sm_entry.insert(END,details[0])
+        mm_entry.insert(END,details[1])
+        rn_entry.insert(END,details[2])
+        p_entry.insert(END,details[3])        
 
 top_frame=Frame(root,background="#FF82AB")
 top_frame.pack() 
@@ -95,19 +138,19 @@ l_box.bind("<<ListboxSelect>>",display)
 bottom_frame=Frame(root,background="#FF82AB")
 bottom_frame.pack(pady=20)
 
-edit=Button(bottom_frame,text="Edit",width=8)
+edit=Button(bottom_frame,text="Edit",width=8,command=edit)
 edit.grid(row=1,column=0)
 
-delete=Button(bottom_frame,text="DELETE",width=8)
+delete=Button(bottom_frame,text="DELETE",width=8,command=remove)
 delete.grid(row=1,column=1,padx=20)
 
-open=Button(bottom_frame,text="OPEN",width=8)
+open=Button(bottom_frame,text="OPEN",width=8,command=open_file)
 open.grid(row=1,column=2)
 
 add=Button(bottom_frame,text="UPDATE/ADD",command=adding)
 add.grid(row=1,column=3,padx=20)
 
-save=Button(bottom_frame,text= "SAVE",width=20)
+save=Button(bottom_frame,text= "SAVE",width=20,command=s_file)
 save.grid(row=1,column=4)
 
 s_bar.config(command=l_box.yview) 
